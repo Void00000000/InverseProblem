@@ -2,8 +2,8 @@ name: Build and Release WPF Project
 
 on:
   push:
-    branches: [ "master" ]  # Workflow срабатывает при push в ветку master.
-  workflow_dispatch:        # Позволяет вручную запустить workflow из интерфейса GitHub.
+    branches: [ "master" ]  # Workflow запускается при пуше в ветку master.
+  workflow_dispatch:        # Позволяет запускать workflow вручную.
 
 jobs:
   build:
@@ -14,7 +14,7 @@ jobs:
     runs-on: windows-latest
 
     env:
-      Solution_Name: InverseProblem.sln  # Замените на имя вашего решения.
+      Solution_Name: MyApp.sln  # Замените на имя вашего решения.
 
     steps:
     - name: Checkout
@@ -38,12 +38,15 @@ jobs:
       env:
         Configuration: ${{ matrix.configuration }}
 
+    # Архивируем артефакты сборки
     - name: Archive Build Artifacts
       run: |
         mkdir BuildArtifacts
         Copy-Item -Path */bin/${{ matrix.configuration }}/* -Destination BuildArtifacts -Recurse
+        Compress-Archive -Path BuildArtifacts/* -DestinationPath BuildArtifacts.zip
       shell: pwsh
 
+    # Создаём релиз
     - name: Create GitHub Release
       id: create_release
       uses: actions/create-release@v1
@@ -52,15 +55,16 @@ jobs:
       with:
         tag_name: v${{ github.run_number }}
         release_name: "Build v${{ github.run_number }}"
-        draft: false  # Установите в true, если хотите создать черновик релиза.
+        draft: false
         prerelease: false
 
+    # Загружаем архив в релиз
     - name: Upload Release Assets
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: BuildArtifacts
+        asset_path: BuildArtifacts.zip  # Указываем архив
         asset_name: BuildArtifacts.zip
         asset_content_type: application/zip
