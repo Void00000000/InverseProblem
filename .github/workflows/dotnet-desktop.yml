@@ -14,7 +14,7 @@ jobs:
     runs-on: windows-latest
 
     env:
-      Solution_Name: MyApp.sln  # Замените на имя вашего решения.
+      Solution_Name: InverseProblem.sln  # Замените на имя вашего решения.
 
     steps:
     - name: Checkout
