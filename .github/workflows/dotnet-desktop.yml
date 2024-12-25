@@ -54,7 +54,9 @@ jobs:
 
     # Проверяем, что переменная окружения была установлена
     - name: Check generated tag
-      run: echo "Generated tag: ${{ env.RELEASE_TAG }}"
+      run: |
+        echo "Generated tag: $env:RELEASE_TAG"  # Для PowerShell синтаксис $env:VARIABLE_NAME
+      shell: pwsh
 
     # Создаём релиз с уникальным тегом
     - name: Create GitHub Release
