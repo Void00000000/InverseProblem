@@ -1,0 +1,213 @@
+﻿<Window x:Class="InverseProblem.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
+        xmlns:local="clr-namespace:InverseProblem"
+        mc:Ignorable="d"
+        Title="Обратные задачи" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Menu -->
+        <Menu Grid.Row="0" Grid.ColumnSpan="2" Name="menu">
+            <MenuItem Header="Загрузить"/>
+            <MenuItem Header="Сохранить"/>
+        </Menu>
+
+        <!-- Tool Panel -->
+        <Border BorderBrush="Black" BorderThickness="1" Grid.Row="1" Grid.Column="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <!-- Координаты сетки-->
+                <Border BorderBrush="Black" BorderThickness="1" Grid.Row="0" Grid.Column="0" Margin="5 5 5 5">
+                    <Grid Margin="5 5 5 5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Сетка" FontSize="18" Grid.Row="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" Margin="0 0 0 10"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Margin="0 0 0 10">
+                            <TextBlock Text="X0 = "/>
+                            <TextBox Width="52" Height="25" VerticalAlignment="Top"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Margin="0 0 0 10">
+                            <TextBlock Text="Xn = "/>
+                            <TextBox Width="52" Height="25" VerticalAlignment="Top"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" Margin="0 0 0 10">
+                            <TextBlock Text="nx = "/>
+                            <TextBox Width="52" Height="25" VerticalAlignment="Top"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0">
+                            <TextBlock Text="Z0 = "/>
+                            <TextBox Width="52" Height="25" VerticalAlignment="Top"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1">
+                            <TextBlock Text="Zn = "/>
+                            <TextBox Width="52" Height="25" VerticalAlignment="Top"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2">
+                            <TextBlock Text="nz = "/>
+                            <TextBox Width="52" Height="25" VerticalAlignment="Top"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Профиль-->
+                <Border BorderBrush="Black" BorderThickness="1" Grid.Row="1" Grid.Column="0" Margin="5 5 5 5">
+                    <Grid Margin="5 5 5 5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Профиль" FontSize="18" Grid.Row="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" Margin="0 0 0 10"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">
+                            <TextBlock Text="X0 = "/>
+                            <TextBox Width="52" Height="25" VerticalAlignment="Top"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Margin="0 0 0 10">
+                            <TextBlock Text="Xn = "/>
+                            <TextBox Width="52" Height="25" VerticalAlignment="Top"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2">
+                            <TextBlock Text="Z = "/>
+                            <TextBox Width="52" Height="25" VerticalAlignment="Top"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1" Margin="5 0 0 0">
+                            <TextBlock Text="N = "/>
+                            <TextBox Width="52" Height="25" VerticalAlignment="Top"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Всякие параметры-->
+                <Border BorderBrush="Black" BorderThickness="1" Grid.Row="0" Grid.Column="1" Margin="5 5 5 5">
+                    <Grid Margin="5 5 5 5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Параметры" FontSize="18" Grid.Row="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" Margin="0 0 0 10"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Margin="0 0 0 10">
+                            <TextBlock Text="I = "/>
+                            <TextBox Width="52" Height="25" VerticalAlignment="Top"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Margin="0 0 0 10">
+                            <TextBlock Text="Alpha = "/>
+                            <TextBox Width="52" Height="25" VerticalAlignment="Top"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" Margin="0 0 0 10">
+                            <TextBlock Text="gamma0 = "/>
+                            <TextBox Width="52" Height="25" VerticalAlignment="Top"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1" Margin="6 0 0 0">
+                            <TextBlock Text="diffP = "/>
+                            <TextBox Width="52" Height="25" VerticalAlignment="Top"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" Margin="14 0 0 0">
+                            <TextBlock Text="Phi, % = "/>
+                            <TextBox Width="52" Height="25" VerticalAlignment="Top"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1" Margin="5 5 5 5">
+                    <Button Content="Решить прямую задачу" Height="25" Margin="0 0 5 0"/>
+                    <Button Content="Решить обратную задачу" Height="25" Margin="0 0 5 0"/>
+                    <ComboBox>
+                        <TextBlock>X</TextBlock>
+                        <TextBlock>Z</TextBlock>
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+        </Border>
+            
+        <!-- Data Grid -->
+        <Border BorderBrush="Black" BorderThickness="1" Grid.Row="1" Grid.Column="1">
+            <DataGrid x:Name="DataGridCells" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="X0" Binding="{Binding Path=X0, Mode=OneWay, StringFormat={}{0:#0.000}}" Width="*"/>
+                    <DataGridTextColumn Header="X1" Binding="{Binding Path=Xn, Mode=OneWay, StringFormat={}{0:#0.000}}" Width="*"/>
+                    <DataGridTextColumn Header="Z0" Binding="{Binding Path=Z0, Mode=OneWay, StringFormat={}{0:#0.000}}" Width="*"/>
+                    <DataGridTextColumn Header="Z1" Binding="{Binding Path=Zn, Mode=OneWay, StringFormat={}{0:#0.000}}" Width="*"/>
+                    <DataGridTextColumn Header="Px" Binding="{Binding Path=P.X, Mode=TwoWay,StringFormat={}{0:#0.000}}" Width="*"/>
+                    <DataGridTextColumn Header="Pz" Binding="{Binding Path=P.Z, Mode=TwoWay,StringFormat={}{0:#0.000}}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+        </Border>
+
+        <!-- Plot of function and interactive graphic -->
+        <Border BorderBrush="Black" BorderThickness="1" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Placeholder for plot -->
+                <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0">
+                    <ScottPlot:WpfPlot x:Name="FunctionPlot" />
+                </Border>
+            
+                <!-- Interactive graphic -->
+                <Border BorderBrush="Black" BorderThickness="1"  Grid.Column="1">
+                    <Canvas Name="gridCanvas" Background="White" Loaded="gridCanvas_Loaded" SizeChanged="gridCanvas_SizeChanged"/>
+                </Border>
+            </Grid>
+        </Border>
+        <!-- Status Bar -->
+        <StatusBar Grid.Row="3" Grid.ColumnSpan="2" Name="statusBar">
+            <TextBlock x:Name="TextBlockStatusBar" Text="Количество ячеейк = 0 , Невязка = 0" HorizontalAlignment="Center"/>
+        </StatusBar>
+    </Grid>
+</Window>
