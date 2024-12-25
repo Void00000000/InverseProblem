@@ -52,6 +52,10 @@ jobs:
       run: |
         echo "RELEASE_TAG=v${GITHUB_RUN_ID}-$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
+    # Проверяем, что переменная окружения была установлена
+    - name: Check generated tag
+      run: echo "Generated tag: ${{ env.RELEASE_TAG }}"
+
     # Создаём релиз с уникальным тегом
     - name: Create GitHub Release
       id: create_release
