@@ -1,5 +1,12 @@
 name: Build and Release WPF Project
 
+permissions:
+  contents: write        # Разрешение на запись в репозиторий для загрузки активов
+  id-token: write        # Разрешение для работы с токеном
+  actions: write         # Разрешение для выполнения действий
+  issues: write          # Для создания релиза
+  pull-requests: write   # Для работы с pull request
+
 on:
   push:
     branches: [ "master" ]  # Workflow запускается при пуше в ветку master.
