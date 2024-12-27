@@ -56,14 +56,14 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Set upload URL as environment variable
-      run: echo "upload_url=${{ steps.create_release.outputs.upload_url }}" >> $GITHUB_ENV
+      run: echo "UPLOAD_URL=${{ steps.create_release.outputs.upload_url }}" >> $GITHUB_ENV
 
     - name: Upload Release Assets
       uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ env.upload_url }}
-        asset_path: ${{ github.workspace }}\BuildArtifacts.zip
+        upload_url: ${{ env.UPLOAD_URL }}
+        asset_path: BuildArtifacts.zip
         asset_name: BuildArtifacts.zip
         asset_content_type: application/zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
