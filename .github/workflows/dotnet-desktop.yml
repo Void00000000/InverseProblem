@@ -19,14 +19,14 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-
+        
     - name: Build Solution
-      run: msbuild "%Solution_Name%" /p:Configuration=%Build_Configuration%
+      run: msbuild $env:Solution_Name /p:Configuration=$env:Build_Configuration
 
     - name: Archive Build Artifacts
       run: |
         mkdir BuildArtifacts
-        xcopy */bin/%Build_Configuration% BuildArtifacts /E /I
+        xcopy */bin/$env:Build_Configuration BuildArtifacts /E /I
         powershell Compress-Archive -Path BuildArtifacts\* -DestinationPath BuildArtifacts.zip
 
     - name: Create GitHub Release
