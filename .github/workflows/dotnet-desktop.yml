@@ -21,7 +21,7 @@ jobs:
         fetch-depth: 0
 
     - name: Restore NuGet Packages
-      run: nuget restore $env:Solution_Name
+      run: dotnet restore $env:Solution_Name
 
     - name: Build Solution
       run: msbuild $env:Solution_Name /p:Configuration=$env:Build_Configuration
