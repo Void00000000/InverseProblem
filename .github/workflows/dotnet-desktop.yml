@@ -3,45 +3,35 @@ name: Build and Release WPF Project
 on:
   push:
     branches:
-      - "master"    # Запускать workflow при пуше в ветку master
-  workflow_dispatch:  # Возможность запуска вручную
+      - "master"
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: self-hosted  # Используем self-hosted раннер
+    runs-on: self-hosted
 
     env:
-      Solution_Name: InverseProblem.sln  # Имя вашего решения
-      Build_Configuration: Release       # Конфигурация сборки (Debug/Release)
+      Solution_Name: InverseProblem.sln
+      Build_Configuration: Release
 
     steps:
-    # 1. Клонирование репозитория
     - name: Checkout Repository
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0  # Полное клонирование репозитория
+        fetch-depth: 0
 
-    # 2. Восстановление NuGet-пакетов
     - name: Restore NuGet Packages
-      run: nuget restore $env:Solution_Name
-      shell: pwsh
+      run: nuget restore "%Solution_Name%"
 
-    # 3. Сборка проекта
     - name: Build Solution
-      run: msbuild $env:Solution_Name /p:Configuration=$env:Build_Configuration
-      shell: pwsh
+      run: msbuild "%Solution_Name%" /p:Configuration=%Build_Configuration%
 
-    # 4. Архивация артефактов сборки
     - name: Archive Build Artifacts
       run: |
-        $outputDir = "BuildArtifacts"
-        $archiveName = "BuildArtifacts.zip"
-        mkdir $outputDir
-        Copy-Item -Path */bin/$env:Build_Configuration/* -Destination $outputDir -Recurse
-        Compress-Archive -Path "$outputDir\*" -DestinationPath $archiveName
-      shell: pwsh
+        mkdir BuildArtifacts
+        xcopy */bin/%Build_Configuration% BuildArtifacts /E /I
+        powershell Compress-Archive -Path BuildArtifacts\* -DestinationPath BuildArtifacts.zip
 
-    # 5. Создание релиза
     - name: Create GitHub Release
       id: create_release
       uses: actions/create-release@v1
@@ -53,7 +43,6 @@ jobs:
         draft: false
         prerelease: false
 
-    # 6. Загрузка архива в релиз
     - name: Upload Release Assets
       uses: actions/upload-release-asset@v1
       env:
