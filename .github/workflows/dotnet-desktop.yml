@@ -32,14 +32,13 @@ jobs:
         Write-Host "Listing files in the build directory:"
         Get-ChildItem -Path $buildPath -Recurse
 
+        # Архивируем артефакты сборки
     - name: Archive Build Artifacts
       run: |
-        $buildArtifactsFolder = "E:\Self hosted runner\actions-runner\_work\InverseProblem\BuildArtifacts"
-        $outputFile = "$buildArtifactsFolder\BuildArtifacts.zip"
-        New-Item -ItemType Directory -Force -Path $buildArtifactsFolder
-        xcopy "E:\Self hosted runner\actions-runner\_work\InverseProblem\*\bin\$env:Build_Configuration\*" $buildArtifactsFolder /E /I
-        Compress-Archive -Path "$buildArtifactsFolder\*" -DestinationPath $outputFile
-      shell: powershell
+        mkdir BuildArtifacts
+        Copy-Item -Path */bin/${{ matrix.configuration }}/* -Destination BuildArtifacts -Recurse
+        Compress-Archive -Path BuildArtifacts/* -DestinationPath BuildArtifacts.zip
+      shell: pwsh
 
     - name: Create GitHub Release
       id: create_release
