@@ -35,12 +35,9 @@ jobs:
         # Архивируем артефакты сборки
     - name: Archive Build Artifacts
       run: |
-        $buildArtifactsFolder = "E:\Self hosted runner\actions-runner\_work\InverseProblem\BuildArtifacts"
-        $outputFile = "$buildArtifactsFolder\BuildArtifacts.zip"
-        New-Item -ItemType Directory -Force -Path $buildArtifactsFolder
-        xcopy "E:\Self hosted runner\actions-runner\_work\InverseProblem\*\bin\$env:Build_Configuration\*" $buildArtifactsFolder /E /I
-        Compress-Archive -Path "$buildArtifactsFolder\*" -DestinationPath $outputFile
-      shell: powershell
+        mkdir BuildArtifacts
+        xcopy */bin/$env:Build_Configuration BuildArtifacts /E /I
+        powershell Compress-Archive -Path BuildArtifacts\* -DestinationPath BuildArtifacts.zip
 
     - name: Create GitHub Release
       id: create_release
