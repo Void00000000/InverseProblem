@@ -38,7 +38,7 @@ jobs:
         mkdir BuildArtifacts
         Copy-Item -Path */bin/${{ matrix.configuration }}/* -Destination BuildArtifacts -Recurse
         Compress-Archive -Path BuildArtifacts/* -DestinationPath BuildArtifacts.zip
-      shell: pwsh
+      shell: cmd
 
     - name: Create GitHub Release
       id: create_release
