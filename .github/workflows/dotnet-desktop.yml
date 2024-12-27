@@ -2,46 +2,46 @@ name: Build and Release WPF Project
 
 on:
   push:
-    branches: [ "master" ]  # Workflow запускается при пуше в ветку master.
-  workflow_dispatch:        # Позволяет запускать workflow вручную.
+    branches:
+      - "master"    # Запускать workflow при пуше в ветку master
+  workflow_dispatch:  # Возможность запуска вручную
 
 jobs:
   build:
-    strategy:
-      matrix:
-        configuration: [Debug, Release]
-
-    runs-on: self-hosted
+    runs-on: self-hosted  # Используем self-hosted раннер
 
     env:
-      Solution_Name: InverseProblem.sln  # Имя решения
+      Solution_Name: InverseProblem.sln  # Имя вашего решения
+      Build_Configuration: Release       # Конфигурация сборки (Debug/Release)
 
     steps:
-    - name: Checkout
+    # 1. Клонирование репозитория
+    - name: Checkout Repository
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0
+        fetch-depth: 0  # Полное клонирование репозитория
 
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v2
-
-    - name: Restore NuGet packages
+    # 2. Восстановление NuGet-пакетов
+    - name: Restore NuGet Packages
       run: nuget restore $env:Solution_Name
-
-    - name: Build Solution
-      run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration
-      env:
-        Configuration: ${{ matrix.configuration }}
-
-    # Архивируем артефакты сборки
-    - name: Archive Build Artifacts
-      run: |
-        mkdir BuildArtifacts
-        Copy-Item -Path */bin/${{ matrix.configuration }}/* -Destination BuildArtifacts -Recurse
-        Compress-Archive -Path BuildArtifacts/* -DestinationPath BuildArtifacts.zip
       shell: pwsh
 
-    # Создаём релиз
+    # 3. Сборка проекта
+    - name: Build Solution
+      run: msbuild $env:Solution_Name /p:Configuration=$env:Build_Configuration
+      shell: pwsh
+
+    # 4. Архивация артефактов сборки
+    - name: Archive Build Artifacts
+      run: |
+        $outputDir = "BuildArtifacts"
+        $archiveName = "BuildArtifacts.zip"
+        mkdir $outputDir
+        Copy-Item -Path */bin/$env:Build_Configuration/* -Destination $outputDir -Recurse
+        Compress-Archive -Path "$outputDir\*" -DestinationPath $archiveName
+      shell: pwsh
+
+    # 5. Создание релиза
     - name: Create GitHub Release
       id: create_release
       uses: actions/create-release@v1
@@ -53,13 +53,13 @@ jobs:
         draft: false
         prerelease: false
 
-    # Загружаем архив в релиз
+    # 6. Загрузка архива в релиз
     - name: Upload Release Assets
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: BuildArtifacts.zip  # Указываем архив
+        asset_path: BuildArtifacts.zip
         asset_name: BuildArtifacts.zip
         asset_content_type: application/zip
