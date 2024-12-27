@@ -28,9 +28,11 @@ jobs:
 
     - name: Archive Build Artifacts
       run: |
-        mkdir BuildArtifacts
-        xcopy */bin/$env:Build_Configuration BuildArtifacts /E /I
-        powershell Compress-Archive -Path BuildArtifacts\* -DestinationPath BuildArtifacts.zip
+        $buildArtifactsFolder = "E:\Self hosted runner\actions-runner\_work\InverseProblem\BuildArtifacts"
+        $outputFile = "$buildArtifactsFolder\BuildArtifacts.zip"
+        New-Item -ItemType Directory -Force -Path $buildArtifactsFolder
+        xcopy */bin/$env:Build_Configuration/* $buildArtifactsFolder /E /I
+        Compress-Archive -Path "$buildArtifactsFolder\*" -DestinationPath $outputFile
 
     - name: Create GitHub Release
       id: create_release
@@ -49,6 +51,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: BuildArtifacts.zip
+        asset_path: ${{ github.workspace }}\BuildArtifacts.zip  # Обновлено с использованием переменной GitHub workspace
         asset_name: BuildArtifacts.zip
         asset_content_type: application/zip
