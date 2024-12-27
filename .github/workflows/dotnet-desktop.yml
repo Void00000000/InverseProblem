@@ -32,17 +32,25 @@ jobs:
         Write-Host "Listing files in the build directory:"
         Get-ChildItem -Path $buildPath -Recurse
 
-        # Архивируем артефакты сборки
     - name: Archive Build Artifacts
       run: |
         mkdir BuildArtifacts
         xcopy */bin/$env:Build_Configuration BuildArtifacts /E /I
         powershell Compress-Archive -Path BuildArtifacts\* -DestinationPath BuildArtifacts.zip
 
+    - name: Create GitHub Release Tag
+      run: |
+        # Формирование тега на основе номера сборки
+        $tag_name = "v${{ github.run_number }}"
+        echo "Tag name: $tag_name"
+        git tag $tag_name
+        git push origin $tag_name
+
     - name: Create GitHub Release
       id: create_release
       uses: softprops/action-gh-release@v1
       with:
+        tag_name: "v${{ github.run_number }}"  # Указываем тег для релиза
         files: BuildArtifacts.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
