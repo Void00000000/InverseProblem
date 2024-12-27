@@ -11,10 +11,10 @@ jobs:
       matrix:
         configuration: [Debug, Release]
 
-    runs-on: windows-latest
+    runs-on: self-hosted
 
     env:
-      Solution_Name: InverseProblem.sln  # Замените на имя вашего решения.
+      Solution_Name: InverseProblem.sln  # Имя решения
 
     steps:
     - name: Checkout
