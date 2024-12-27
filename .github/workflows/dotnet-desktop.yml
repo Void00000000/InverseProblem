@@ -26,14 +26,20 @@ jobs:
     - name: Build Solution
       run: msbuild $env:Solution_Name /p:Configuration=$env:Build_Configuration
 
+    - name: Verify Build Files
+      run: |
+        $buildPath = "E:\Self hosted runner\actions-runner\_work\InverseProblem\*\bin\$env:Build_Configuration"
+        Write-Host "Listing files in the build directory:"
+        Get-ChildItem -Path $buildPath -Recurse
+
     - name: Archive Build Artifacts
       run: |
         $buildArtifactsFolder = "E:\Self hosted runner\actions-runner\_work\InverseProblem\BuildArtifacts"
         $outputFile = "$buildArtifactsFolder\BuildArtifacts.zip"
         New-Item -ItemType Directory -Force -Path $buildArtifactsFolder
-        xcopy .\*\bin\$env:Build_Configuration\* $buildArtifactsFolder /E /I
+        xcopy "E:\Self hosted runner\actions-runner\_work\InverseProblem\*\bin\$env:Build_Configuration\*" $buildArtifactsFolder /E /I
         Compress-Archive -Path "$buildArtifactsFolder\*" -DestinationPath $outputFile
-      shell: powershell  # Используем стандартный PowerShell, доступный на Windows
+      shell: powershell
 
     - name: Create GitHub Release
       id: create_release
