@@ -35,8 +35,10 @@ jobs:
     - name: Archive Build Artifacts
       run: |
         mkdir BuildArtifacts
-        xcopy */bin/$env:Build_Configuration BuildArtifacts /E /I
-        powershell Compress-Archive -Path BuildArtifacts\* -DestinationPath BuildArtifacts.zip
+        # Убедитесь, что файлы скопированы из правильного пути
+        xcopy /E /I /Y "E:\Self hosted runner\actions-runner\_work\InverseProblem\*\bin\$env:Build_Configuration" BuildArtifacts
+        # Создайте архив
+        Compress-Archive -Path BuildArtifacts\* -DestinationPath BuildArtifacts.zip
 
     - name: Create GitHub Release Tag
       run: |
@@ -50,18 +52,17 @@ jobs:
       id: create_release
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: "v${{ github.run_number }}"  # Указываем тег для релиза
+        tag_name: "v${{ github.run_number }}"
         files: BuildArtifacts.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    # Загружаем архив в релиз
     - name: Upload Release Assets
       uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: BuildArtifacts.zip  # Указываем архив
+        asset_path: BuildArtifacts.zip
         asset_name: BuildArtifacts.zip
         asset_content_type: application/zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
