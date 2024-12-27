@@ -35,10 +35,7 @@ jobs:
     - name: Archive Build Artifacts
       run: |
         mkdir BuildArtifacts
-        # Убедитесь, что файлы скопированы из правильного пути
-        xcopy /E /I /Y "E:\Self hosted runner\actions-runner\_work\InverseProblem\*\bin\$env:Build_Configuration" BuildArtifacts
-        # Создайте архив
-        Compress-Archive -Path BuildArtifacts\* -DestinationPath BuildArtifacts.zip
+        Compress-Archive -Path E:\Self hosted runner\actions-runner\_work\InverseProblem\*\bin\$env:Build_Configuration -DestinationPath E:\Self hosted runner\actions-runner\_work\InverseProblem\BuildArtifacts.zip
 
     - name: Create GitHub Release Tag
       run: |
