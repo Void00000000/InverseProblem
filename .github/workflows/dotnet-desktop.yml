@@ -20,6 +20,11 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Set PowerShell Execution Policy
+      run: |
+        powershell -Command "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force"
+      shell: cmd
+
     - name: Restore NuGet Packages
       run: dotnet restore $env:Solution_Name
 
@@ -31,26 +36,27 @@ jobs:
         $buildArtifactsFolder = "E:\Self hosted runner\actions-runner\_work\InverseProblem\BuildArtifacts"
         $outputFile = "$buildArtifactsFolder\BuildArtifacts.zip"
         New-Item -ItemType Directory -Force -Path $buildArtifactsFolder
-        xcopy */bin/$env:Build_Configuration/* $buildArtifactsFolder /E /I
+        xcopy .\*\bin\$env:Build_Configuration\* $buildArtifactsFolder /E /I
         Compress-Archive -Path "$buildArtifactsFolder\*" -DestinationPath $outputFile
+      shell: pwsh  # Указываем PowerShell как оболочку для выполнения команд
 
     - name: Create GitHub Release
       id: create_release
-      uses: actions/create-release@v1
+      uses: softprops/action-gh-release@v1
+      with:
+        files: BuildArtifacts.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: v${{ github.run_number }}
-        release_name: "Build v${{ github.run_number }}"
-        draft: false
-        prerelease: false
+
+    - name: Set upload URL as environment variable
+      run: echo "upload_url=${{ steps.create_release.outputs.upload_url }}" >> $GITHUB_ENV
 
     - name: Upload Release Assets
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ github.workspace }}\BuildArtifacts.zip  # Обновлено с использованием переменной GitHub workspace
+        upload_url: ${{ env.upload_url }}
+        asset_path: ${{ github.workspace }}\BuildArtifacts.zip
         asset_name: BuildArtifacts.zip
         asset_content_type: application/zip
