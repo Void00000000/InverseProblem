@@ -20,14 +20,6 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Set PowerShell Execution Policy
-      run: |
-        powershell -Command "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force"
-      shell: cmd
-
-    - name: Restore NuGet Packages
-      run: nuget restore "%Solution_Name%"
-
     - name: Build Solution
       run: msbuild "%Solution_Name%" /p:Configuration=%Build_Configuration%
 
