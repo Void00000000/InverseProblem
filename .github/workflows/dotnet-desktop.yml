@@ -42,19 +42,10 @@ jobs:
     - name: Create GitHub Release Tag
       run: |
         # Формирование тега на основе номера сборки
-        $tag_name = "v${{ github.run_number }}"
+        $tag_name = "v1.0.${{ github.run_number }}"
         echo "Tag name: $tag_name"
         git tag $tag_name
         git push origin $tag_name
-
-    - name: Create GitHub Release
-      id: create_release
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: "v${{ github.run_number }}"
-        files: BuildArtifacts.zip
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload Release Assets
       uses: actions/upload-release-asset@v1
