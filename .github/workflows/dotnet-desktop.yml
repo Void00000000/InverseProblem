@@ -51,7 +51,7 @@ jobs:
       id: create_release
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: "v${{ github.run_number }}"
+        tag_name: "v1.0.${{ github.run_number }}"
         files: BuildArtifacts.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
