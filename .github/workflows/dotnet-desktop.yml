@@ -35,7 +35,9 @@ jobs:
     - name: Archive Build Artifacts
       run: |
         mkdir BuildArtifacts
-        Compress-Archive -Path E:\Self hosted runner\actions-runner\_work\InverseProblem\*\bin\$env:Build_Configuration -DestinationPath E:\Self hosted runner\actions-runner\_work\InverseProblem\BuildArtifacts.zip
+        Copy-Item -Path */bin/${{ matrix.configuration }}/* -Destination BuildArtifacts -Recurse
+        Compress-Archive -Path BuildArtifacts/* -DestinationPath BuildArtifacts.zip
+      shell: pwsh
 
     - name: Create GitHub Release Tag
       run: |
